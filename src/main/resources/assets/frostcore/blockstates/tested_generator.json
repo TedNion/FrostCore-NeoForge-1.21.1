@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "frostcore:block/tested_generator"
+    }
+  }
+}

@@ -1,6 +1,5 @@
 package net.tednion.frostcore;
 
-import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -24,8 +23,5 @@ public class ExampleModClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
-        FrostCore.LOGGER.info("HELLO FROM CLIENT SETUP");
-        FrostCore.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
 }
