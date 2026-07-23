@@ -2,6 +2,9 @@ package net.tednion.frostcore;
 
 import net.minecraft.world.item.CreativeModeTabs;
 import net.tednion.frostcore.block.FrostCoreBlocks;
+import net.tednion.frostcore.blockentity.FrostCoreBlockEntityes;
+import net.tednion.frostcore.events.FrostCoreEvents;
+import net.tednion.frostcore.fluid.FrostCoreFluids;
 import net.tednion.frostcore.item.FrostCoreItems;
 
 import net.neoforged.bus.api.IEventBus;
@@ -33,6 +36,9 @@ public class FrostCore {
 
         FrostCoreItems.register(modEventBus);
         FrostCoreBlocks.register(modEventBus);
+        FrostCoreBlockEntityes.register(modEventBus);
+        FrostCoreFluids.register(modEventBus);
+        modEventBus.addListener(FrostCoreEvents::registerCapabilities);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);

@@ -18,7 +18,7 @@ public class FrostCoreBlocks {
 
 
     public static final DeferredBlock<Block> TESTED_GENERATOR = registerBlock("tested_generator",
-            () -> new Block(BlockBehaviour.Properties.of().strength(4f)));
+            () -> new GeneratorBlock(BlockBehaviour.Properties.of().strength(4f)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
