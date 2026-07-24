@@ -1,8 +1,13 @@
 package net.tednion.frostcore;
 
 import net.minecraft.world.item.CreativeModeTabs;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.tednion.frostcore.block.FrostCoreBlocks;
 import net.tednion.frostcore.blockentity.FrostCoreBlockEntityes;
+import net.tednion.frostcore.events.ClientEvents;
 import net.tednion.frostcore.events.FrostCoreEvents;
 import net.tednion.frostcore.fluid.FrostCoreFluids;
 import net.tednion.frostcore.item.FrostCoreItems;
@@ -40,11 +45,22 @@ public class FrostCore {
         FrostCoreFluids.register(modEventBus);
         modEventBus.addListener(FrostCoreEvents::registerCapabilities);
 
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        }
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+            // Добавьте эту строку для регистрации настройки клиента:
+            modEventBus.addListener(ClientEvents::onClientSetup);
+        }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

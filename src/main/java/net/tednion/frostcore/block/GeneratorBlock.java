@@ -24,10 +24,10 @@ public class GeneratorBlock extends Block implements EntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == FrostCoreBlockEntityes.GENERATOR.get()) {
+        // Выполняем tick() ТОЛЬКО на сервере
+        if (!level.isClientSide() && type == FrostCoreBlockEntityes.GENERATOR.get()) {
             return (lvl, pos, st, be) -> ((GeneratorBlockEntity) be).tick();
         }
         return null;
     }
-
 }

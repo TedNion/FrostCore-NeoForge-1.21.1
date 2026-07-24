@@ -1,5 +1,7 @@
 package net.tednion.frostcore.events;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -7,14 +9,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.tednion.frostcore.FrostCore;
-import net.minecraft.network.chat.Component;
 import net.tednion.frostcore.blockentity.GeneratorBlockEntity;
 
 @EventBusSubscriber(modid = FrostCore.MODID)
 public class BlockInterectionHandler {
+
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getLevel() == null || event.getLevel().isClientSide()) {
+        // Пропускаем клиент и обработку второй руки (OFF_HAND)
+        if (event.getLevel().isClientSide() || event.getHand() != InteractionHand.MAIN_HAND) {
             return;
         }
 
@@ -25,26 +28,23 @@ public class BlockInterectionHandler {
 
         // Проверка пустой рукой — вывод состояния
         if (event.getItemStack().isEmpty()) {
-            if (!event.getLevel().isClientSide()) {
-                BlockEntity be = event.getLevel().getBlockEntity(event.getPos());
-                if (be instanceof GeneratorBlockEntity) {
-                    net.tednion.frostcore.blockentity.GeneratorBlockEntity generatorBlock = (GeneratorBlockEntity) be;
-                    int steamAmount = generator.getSteamTank().getFluidAmount();
-                    int fuel = generator.getFuelBurnTime();
-                    float temp = generator.getTemperature();
-                    event.getEntity().sendSystemMessage(
-                            net.minecraft.network.chat.Component.literal(
-                                    "Пар: " + steamAmount + " мБ | Топливо: " + fuel + " тиков | Температура: " + String.format("%.1f", temp) + "%"
-                            )
-                    );
-                }
-            }
+            int steamAmount = generator.getSteamTank().getFluidAmount();
+            int fuel = generator.getFuelBurnTime();
+            float temp = generator.getTemperature();
+
+            event.getEntity().sendSystemMessage(
+                    Component.literal(
+                            "Пар: " + steamAmount + " мБ | Топливо: " + fuel + " тиков | Температура: " + String.format("%.1f", temp) + "%"
+                    )
+            );
+
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
             return;
         }
 
-        if (event.getItemStack().getItem() == Items.COAL) {
+        // Заправка углем
+        if (event.getItemStack().is(Items.COAL)) {
             if (generator.addFuel(200)) {
                 if (!event.getEntity().isCreative()) {
                     event.getItemStack().shrink(1);
